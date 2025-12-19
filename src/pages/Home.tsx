@@ -58,7 +58,6 @@ export default function Home() {
 
   useEffect(() => {
     try {
-      console.log(searchParams);
       if (!searchParams?.size) {
         setQueryResponse(undefined);
         return;
@@ -78,12 +77,16 @@ export default function Home() {
   }, [searchParams]);
 
   async function fetchMoreMovies() {
-    const res = await fetch(
-      `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}&page=${pagination}`
-    );
-    const data = await res.json();
-    movieArray?.push(...data.Search);
-    setPagination((prevPage) => prevPage + 1);
+    try {
+      const res = await fetch(
+        `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}&page=${pagination}`
+      );
+      const data = await res.json();
+      movieArray?.push(...data.Search);
+      setPagination((prevPage) => prevPage + 1);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   //Building results card list

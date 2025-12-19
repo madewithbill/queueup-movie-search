@@ -58,7 +58,6 @@ export default function Watchlist() {
 
   // this also conditionally renders end of results text
   const listHasMore = watchlistArr().length > renderedArr.length;
-  console.log(listHasMore);
 
   //create poster tiles
   const watchlistElements = renderedArr.map((movie) => {
