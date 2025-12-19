@@ -1,0 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  --color-neutral-50: #f4f3f1;
+  --color-neutral-100: #eae8e2;
+  --color-neutral-200: #d8d6ce;
+  --color-neutral-300: #c7c4bc;
+  --color-neutral-400: #a5a39c;
+  --color-neutral-500: #8f8d87;
+  --color-neutral-600: #716f6b;
+  --color-neutral-700: #54524f;
+  --color-neutral-800: #383734;
+  --color-neutral-900: #1d1c1b;
+  --color-neutral-950: #141312;
+
+  --leading-condensed: 1.1;
+}

@@ -1,0 +1,76 @@
+@reference './index.css';
+
+:root {
+  @apply bg-neutral-50 text-neutral-950 dark:bg-neutral-950 dark:text-neutral-50 min-h-dvh pb-8 max-w-2xl m-auto;
+  scrollbar-gutter: stable;
+}
+
+button:hover,
+select:hover {
+  @apply cursor-pointer;
+}
+
+.text-display-lg {
+  @apply text-5xl/condensed font-medium tracking-[-0.5px]
+  sm:text-[4rem] 
+  lg:text-[5.375rem];
+}
+
+.text-display-sm {
+  @apply text-[2.5rem]/condensed font-medium tracking-[-0.5px]
+  sm:text-[3.5rem] 
+  lg:text-7xl;
+}
+
+.text-heading-2xl {
+  @apply text-4xl/condensed font-medium tracking-[-0.5px]
+  sm:text-[3rem] 
+  lg:text-[3.5rem];
+}
+
+.text-heading-xl {
+  @apply text-[2rem]/condensed font-medium tracking-[-0.5px]
+  sm:text-[2.5rem] 
+  lg:text-[3rem];
+}
+
+.text-heading-lg {
+  @apply text-[1.75rem]/tight font-medium 
+  sm:text-[2rem] 
+  lg:text-[2.5rem];
+}
+
+.text-heading-md {
+  @apply text-2xl/tight font-medium 
+  sm:text-[1.75rem] 
+  lg:text-[2rem];
+}
+
+.text-heading-sm {
+  @apply text-xl/snug font-medium 
+  sm:text-[1.5rem] 
+  lg:text-[1.75rem];
+}
+
+.text-heading-xs {
+  @apply text-lg/snug font-medium 
+  sm:text-[1.25rem] 
+  lg:text-[1.5rem];
+}
+
+.text-body-lg {
+  @apply text-lg/normal
+  lg:text-[1.25rem];
+}
+
+.text-body-md {
+  @apply text-base;
+}
+
+.text-body-sm {
+  @apply text-sm/normal;
+}
+
+.text-eyebrow {
+  @apply text-[0.6875rem]/normal;
+}
