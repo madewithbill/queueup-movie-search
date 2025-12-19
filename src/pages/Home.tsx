@@ -12,7 +12,7 @@ import Card from "../components/Card";
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import { QueueContext, type Context } from "../components/AppLayout";
 import { watchlistToggle, getWatchlist } from "../utils";
-import NoResultsText from "../components/noResultsText";
+import NoResultsText from "../components/NoResultsText";
 import errorImg from "../assets/image-error-fallback.png";
 
 export type CallResponse = {

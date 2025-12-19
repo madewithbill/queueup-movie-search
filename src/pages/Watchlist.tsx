@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { type CallResponse } from "./Home";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import InfiniteScroll from "react-infinite-scroll-component";
-import NoResultsText from "../components/noResultsText";
+import NoResultsText from "../components/NoResultsText";
 import errorImg from "../assets/image-error-fallback.png";
 
 export default function Watchlist() {
