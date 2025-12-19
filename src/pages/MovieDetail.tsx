@@ -75,7 +75,7 @@ export default function MovieDetail() {
     try {
       async function getDetails() {
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${omdbKey}&i=${movieDetailId}`
+          `https://www.omdbapi.com/?apikey=${omdbKey}&i=${movieDetailId}`
         );
         const data = await res.json();
         setCurrentMovie(data);

@@ -65,7 +65,7 @@ export default function Home() {
       }
       async function getMovie() {
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}`
+          `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}`
         );
         const data = await res.json();
 
@@ -79,7 +79,7 @@ export default function Home() {
 
   async function fetchMoreMovies() {
     const res = await fetch(
-      `http://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}&page=${pagination}`
+      `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}&page=${pagination}`
     );
     const data = await res.json();
     movieArray?.push(...data.Search);
