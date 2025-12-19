@@ -2,7 +2,7 @@
 
 A React-based app to find and save favorite movies and tv shows. This is based on a Scrimba porject challenge, with some personal stretch goals to try out new tooling and techniques.
 
-Currently, two official plugins are available:
+![Thumbnail featuring a screenshot of the QueueUp web app.](./public/queueup-thumbnail.jpg)
 
 ## Functionality
 
