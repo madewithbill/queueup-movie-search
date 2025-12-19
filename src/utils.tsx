@@ -31,12 +31,10 @@ export function watchlistToggle({ e, result, setQueue }: watchlistToggleProps) {
     return JSON.parse(movie);
   });
   if (parsedWatchlist.every((item) => item.imdbID !== result.imdbID)) {
-    console.log("new one added");
     currentWatchlist.push(JSON.stringify(result));
     localStorage.setItem("watchlist", JSON.stringify(currentWatchlist));
     setQueue(currentWatchlist);
   } else {
-    console.log("already in");
     const newArr = currentWatchlist.filter(
       (movie) => JSON.parse(movie).imdbID !== result.imdbID
     );

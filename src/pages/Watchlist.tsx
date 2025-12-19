@@ -68,10 +68,10 @@ export default function Watchlist() {
       <Link
         to={`../movies/${resultId}`}
         state={{ resultId, backPath: location.pathname }}
-        className="relative"
+        className="relative max-h-[18.5rem]"
       >
         <img
-          className="h-full object-cover "
+          className="w-full h-full object-cover "
           src={result.Poster}
           alt={`Poster for ${result.Title}`}
           onError={(e) => {
