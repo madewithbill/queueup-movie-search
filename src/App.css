@@ -2,7 +2,7 @@
 
 :root {
   @apply bg-neutral-50 text-neutral-950 dark:bg-neutral-950 dark:text-neutral-50 min-h-dvh pb-8 max-w-2xl m-auto;
-  scrollbar-gutter: stable;
+  scrollbar-gutter: stable both-edges;
 }
 
 button:hover,
