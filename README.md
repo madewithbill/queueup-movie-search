@@ -1,73 +1,30 @@
-# React + TypeScript + Vite
+# QueueUp - OMDB Movie and TV Search
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based app to find and save favorite movies and tv shows. This is based on a Scrimba porject challenge, with some personal stretch goals to try out new tooling and techniques.
 
 Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Functionality
 
-## React Compiler
+- User can search for a movie or TV show in OMDB database. Total results are shown, with each card clickable to show a detail page.
+- Detail pages for each result, providing additional information such as summaries and ratings.
+- Watchlist of saved movies, with the ability to sort with a dropdown filter.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Key Techniques
 
-## Expanding the ESLint configuration
+- Design system buildout with static mobile prototypes. Created with Tailwind in mind for general styling, in addition to custom properties custom theme variables.
+- Mobile first styling with Tailwind and custom CSS, mostly for the typography system.
+- Fetch requests to the OMDB API, with dynamic pagination to call and show more results on demand.
+- Local storage management to save/retrieve watchlist movie data.
+- React Router v6 and useContext for navigation, dynamic routes, and passing state to nested routes.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tooling
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Figma, VSCode, Netlify
+- React
+- React Router v6
+- Typescript
+- Tailwind
+- [react-infinite-scroll-component](https://www.npmjs.com/package/react-infinite-scroll-component)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- [Heroicons](https://heroicons.com/outline)
