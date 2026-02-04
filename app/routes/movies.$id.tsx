@@ -5,7 +5,7 @@ import {
   type Dispatch,
   type SyntheticEvent,
 } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router";
 import Card from "../components/Card";
 import {
   PlusIcon,
@@ -13,7 +13,7 @@ import {
   ArrowPathIcon,
   CheckIcon,
 } from "@heroicons/react/24/outline";
-import { QueueContext, type Context } from "../components/AppLayout";
+import { QueueContext, type Context } from "../root";
 import { watchlistToggle, getWatchlist } from "../utils";
 import errorImg from "../assets/image-error-fallback.png";
 
@@ -61,7 +61,7 @@ type NavLocation = {
 
 export default function MovieDetail() {
   const [currentMovie, setCurrentMovie] = useState<FullMovieObj | undefined>(
-    undefined
+    undefined,
   );
   const location: NavLocation = useLocation();
   const movieDetailId: string = location.state.resultId;
@@ -75,7 +75,7 @@ export default function MovieDetail() {
     try {
       async function getDetails() {
         const res = await fetch(
-          `https://www.omdbapi.com/?apikey=${omdbKey}&i=${movieDetailId}`
+          `https://www.omdbapi.com/?apikey=${omdbKey}&i=${movieDetailId}`,
         );
         const data = await res.json();
         setCurrentMovie(data);

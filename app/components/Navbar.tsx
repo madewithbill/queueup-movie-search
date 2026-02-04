@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { QueueContext } from "./AppLayout";
-import { Link } from "react-router-dom";
+import { QueueContext } from "../root";
+import { Link } from "react-router";
 import {
   MagnifyingGlassIcon,
   QueueListIcon,

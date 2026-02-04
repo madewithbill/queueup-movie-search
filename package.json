@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@react-router/fs-routes": "^7.13.0",
+    "@react-router/node": "^7.13.0",
     "@tailwindcss/vite": "^4.1.18",
+    "isbot": "^5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-infinite-scroll-component": "^6.1.1",
@@ -20,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@react-router/dev": "^7.13.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
