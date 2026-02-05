@@ -2,6 +2,7 @@ import {
   Outlet,
   Scripts,
   useSearchParams,
+  Links,
   type URLSearchParamsInit,
 } from "react-router";
 import Navbar from "./components/Navbar";
@@ -44,6 +45,7 @@ export default function App() {
         <link rel="icon" type="image/svg+xml" href="/queueup-favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta property="og:image" content="/queueup-thumbnail.jpg" />
+        <Links />
         <title>queueup-movie-search</title>
       </head>
       <body>
