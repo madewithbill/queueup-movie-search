@@ -6,11 +6,11 @@ import {
   type Dispatch,
   type JSX,
 } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/Card";
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
-import { QueueContext, type Context } from "../components/AppLayout";
+import { QueueContext, type Context } from "../root";
 import { watchlistToggle, getWatchlist } from "../utils";
 import NoResultsText from "../components/NoResultsText";
 import errorImg from "../assets/image-error-fallback.png";
@@ -48,7 +48,7 @@ export default function Home() {
   //Search submit
   function handleSubmit(formData: FormData) {
     const formQuery: string = encodeURIComponent(
-      formData.get("query") as string
+      formData.get("query") as string,
     );
     setSearchParams(formQuery);
   }
@@ -64,7 +64,7 @@ export default function Home() {
       }
       async function getMovie() {
         const res = await fetch(
-          `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}`
+          `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}`,
         );
         const data = await res.json();
 
@@ -79,7 +79,7 @@ export default function Home() {
   async function fetchMoreMovies() {
     try {
       const res = await fetch(
-        `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}&page=${pagination}`
+        `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}&page=${pagination}`,
       );
       const data = await res.json();
       movieArray?.push(...data.Search);

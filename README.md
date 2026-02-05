@@ -16,13 +16,13 @@ A React-based app to find and save favorite movies and tv shows. This is based o
 - Mobile first styling with Tailwind and custom CSS, mostly for the typography system.
 - Fetch requests to the OMDB API, with dynamic pagination to call and show more results on demand.
 - Local storage management to save/retrieve watchlist movie data.
-- React Router v6 and useContext for navigation, dynamic routes, and passing state to nested routes.
+- React Router and useContext for navigation, dynamic routes, and passing state to nested routes.
 
 ## Tooling
 
 - Figma, VSCode, Netlify
 - React
-- React Router v6
+- React Router v7
 - Typescript
 - Tailwind
 - [react-infinite-scroll-component](https://www.npmjs.com/package/react-infinite-scroll-component)

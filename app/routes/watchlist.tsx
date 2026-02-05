@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent } from "react";
-import { Link } from "react-router-dom";
-import { type CallResponse } from "./Home";
+import { Link } from "react-router";
+import { type CallResponse } from "./_index";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import InfiniteScroll from "react-infinite-scroll-component";
 import NoResultsText from "../components/NoResultsText";
@@ -13,7 +13,7 @@ export default function Watchlist() {
   const watchlistArr = () => {
     //parse baseline array to manipulate
     const defaultArr: string[] = Array.from(
-      JSON.parse(localStorage.getItem("watchlist") || '""')
+      JSON.parse(localStorage.getItem("watchlist") || '""'),
     );
     //compareFn for sort methods
     const compare = (a: string, b: string) => {
@@ -51,7 +51,7 @@ export default function Watchlist() {
   //Infinite scroller function and hasMore check
   function fetchMoreWatchlist() {
     renderedArr.push(
-      ...watchlistArr().slice(watchlistSlice, watchlistSlice + 10)
+      ...watchlistArr().slice(watchlistSlice, watchlistSlice + 10),
     );
     setWatchlistSlice((prevSlice) => prevSlice + 10);
   }
@@ -67,8 +67,9 @@ export default function Watchlist() {
     return (
       <Link
         to={`../movies/${resultId}`}
+        key={resultId}
         state={{ resultId, backPath: location.pathname }}
-        className="relative max-h-[18.5rem]"
+        className="relative max-h-74"
       >
         <img
           className="w-full h-full object-cover "
