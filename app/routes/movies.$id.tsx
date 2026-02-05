@@ -13,7 +13,8 @@ import {
   ArrowPathIcon,
   CheckIcon,
 } from "@heroicons/react/24/outline";
-import { QueueContext, type Context } from "../root";
+import { QueueContext } from "../root";
+
 import { watchlistToggle, getWatchlist } from "../utils";
 import errorImg from "../assets/image-error-fallback.png";
 
@@ -60,13 +61,11 @@ type NavLocation = {
 };
 
 export default function MovieDetail() {
-  const [currentMovie, setCurrentMovie] = useState<FullMovieObj | undefined>(
-    undefined,
-  );
+  const [currentMovie, setCurrentMovie] = useState<FullMovieObj | null>(null);
   const location: NavLocation = useLocation();
   const movieDetailId: string = location.state.resultId;
 
-  const context: Context = useContext(QueueContext);
+  const context = useContext(QueueContext);
   const queue: string[] = context.queue;
   const setQueue: Dispatch<React.SetStateAction<string[]>> = context.setQueue;
 

@@ -67,8 +67,9 @@ export default function Watchlist() {
     return (
       <Link
         to={`../movies/${resultId}`}
+        key={resultId}
         state={{ resultId, backPath: location.pathname }}
-        className="relative max-h-[18.5rem]"
+        className="relative max-h-74"
       >
         <img
           className="w-full h-full object-cover "

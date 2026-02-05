@@ -20,7 +20,7 @@ export type Context = {
   setSearchParams: Dispatch<SetStateAction<URLSearchParamsInit>>;
 };
 
-export const QueueContext = createContext<Context>({
+const QueueContext = createContext<Context>({
   queue: [],
   setQueue: () => {},
   searchParams: undefined,
@@ -60,3 +60,5 @@ export default function App() {
     </html>
   );
 }
+
+export { QueueContext };
