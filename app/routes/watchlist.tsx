@@ -106,6 +106,12 @@ export default function Watchlist() {
 
   return (
     <>
+      <title>Watchlist | QueueUp</title>
+      <meta property="og:title" content="QueueUp Watchlist" />
+      <meta
+        name="description"
+        content="See all of your locally saved movies and television shows."
+      />
       <header className="text-center">
         <h1 className="text-heading-xl mb-8">Watchlist</h1>
         <form>

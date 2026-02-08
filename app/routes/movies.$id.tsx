@@ -109,6 +109,12 @@ export default function MovieDetail() {
 
   return currentMovie ? (
     <>
+      <title>QueueUp | Title Details</title>
+      <meta property="og:title" content={`Find ${result.Title} on QueueUp.`} />
+      <meta
+        name="description"
+        content={`Get information about ${result.Title} and save it to your local watchlist with QueueUp.`}
+      />
       <Link
         to={`../${location.state.backPath}`}
         className="text-body-sm flex items-center gap-1 mb-4"

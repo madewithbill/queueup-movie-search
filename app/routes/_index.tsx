@@ -167,6 +167,12 @@ export default function Home() {
 
   return (
     <>
+      <title>QueueUp Movie and TV Search</title>
+      <meta property="og:title" content="QueueUp Movie and TV Search" />
+      <meta
+        name="description"
+        content="QueueUp helps you find the hottest movies and tv shows. Save them to your watchlist, sit back, and enjoy the show!"
+      />
       <header className="text-center">
         <h1 className="text-heading-xl mb-8">Find Movies and TV</h1>
         <form action={handleSubmit}>

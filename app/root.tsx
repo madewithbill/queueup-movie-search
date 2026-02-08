@@ -49,7 +49,6 @@ export function Layout({ children }: { children: ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta property="og:image" content="/queueup-thumbnail.jpg" />
         <Links />
-        <title>QueueUp Movie and TV Search</title>
       </head>
       <body className="px-4">
         <Navbar />
