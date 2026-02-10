@@ -6,7 +6,7 @@ import {
   type Dispatch,
   type JSX,
 } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/Card";
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
@@ -14,6 +14,8 @@ import { QueueContext, type Context } from "../root";
 import { watchlistToggle, getWatchlist } from "../utils";
 import NoResultsText from "../components/NoResultsText";
 import errorImg from "../assets/image-error-fallback.png";
+import { useHistory } from "../store";
+// import type { Route } from "../../.react-router/types/app/routes/+types/_index";
 
 export type CallResponse = {
   Search: {
@@ -29,10 +31,10 @@ export type CallResponse = {
 };
 
 export default function Home() {
-  const location = useLocation();
   const navigate = useNavigate();
   const [queryResponse, setQueryResponse] = useState<CallResponse>();
   const [pagination, setPagination] = useState<number>(2);
+  const setPath = useHistory((s) => s.setPath);
   //Derived state
   const movieArray: CallResponse["Search"] | undefined = queryResponse?.Search;
   const totalResults: number = Number(queryResponse?.totalResults);
@@ -42,15 +44,13 @@ export default function Home() {
   const context: Context = useContext(QueueContext);
   const queue: string[] = context.queue;
   const setQueue: Dispatch<React.SetStateAction<string[]>> = context.setQueue;
-  const searchParams = context.searchParams;
-  const setSearchParams = context.setSearchParams;
+  const [searchParams, setSearchParams] = useSearchParams();
 
   //Search submit
   function handleSubmit(formData: FormData) {
-    const formQuery: string = encodeURIComponent(
-      formData.get("query") as string,
-    );
-    setSearchParams(formQuery);
+    const urlQuery = new URLSearchParams(formData.get("query") as string);
+    setSearchParams(urlQuery);
+    setPath(`/?${urlQuery}`);
   }
 
   // Fetching Movies
@@ -101,7 +101,6 @@ export default function Home() {
       navigate(`movies/${e.currentTarget.id}`, {
         state: {
           resultId,
-          backPath: location.search,
         },
       });
     }

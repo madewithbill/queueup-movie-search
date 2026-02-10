@@ -5,7 +5,7 @@ import {
   type Dispatch,
   type SyntheticEvent,
 } from "react";
-import { useLocation, Link } from "react-router";
+import { Link } from "react-router";
 import Card from "../components/Card";
 import {
   PlusIcon,
@@ -14,9 +14,11 @@ import {
   CheckIcon,
 } from "@heroicons/react/24/outline";
 import { QueueContext } from "../root";
+import { useHistory } from "../store";
 
 import { watchlistToggle, getWatchlist } from "../utils";
 import errorImg from "../assets/image-error-fallback.png";
+import type { Route } from "../../.react-router/types/app/routes/+types/movies.$id";
 
 type FullMovieObj = {
   Title: string;
@@ -49,26 +51,23 @@ type FullMovieObj = {
   Response: string;
 };
 
-type NavLocation = {
-  pathname: string;
-  search: string;
-  hash: string;
-  state: {
-    resultId: string;
-    backPath: string;
-  };
-  key: string;
-};
+// type NavLocation = {
+//   pathname: string;
+//   search: string;
+//   hash: string;
+//   state: {
+//     resultId: string;
+//     backPath: string;
+//   };
+//   key: string;
+// };
 
-export default function MovieDetail() {
+export default function MovieDetail({ params }: Route.ComponentProps) {
   const [currentMovie, setCurrentMovie] = useState<FullMovieObj | null>(null);
-  const location: NavLocation = useLocation();
-  const movieDetailId: string = location.state.resultId;
-
+  const movieDetailId: string = params.id ?? "";
   const context = useContext(QueueContext);
   const queue: string[] = context.queue;
   const setQueue: Dispatch<React.SetStateAction<string[]>> = context.setQueue;
-
   useEffect(() => {
     const omdbKey = import.meta.env.VITE_OMDB_KEY;
     try {
@@ -84,7 +83,6 @@ export default function MovieDetail() {
       console.log(error);
     }
   }, []);
-
   //Set function parameters from current movie data
   const result = {
     Poster: currentMovie?.Poster,
@@ -94,19 +92,16 @@ export default function MovieDetail() {
     imdbID: currentMovie?.imdbID,
   };
   const resultId: string = movieDetailId;
-
   //Check if current search result id is included in local watchlist
   const onWatchlist: boolean = getWatchlist({ queue }).includes(resultId);
-
   //Watchlist indicator toggle
   function handleToggleClick(e: SyntheticEvent) {
     watchlistToggle({ e, result, setQueue });
   }
-
   //Determine back link
-  const backText =
-    location.state.backPath === "/watchlist" ? "watchlist" : "results";
-
+  console.log(useHistory((s) => s.referralPath));
+  const referralPath = useHistory((s) => s.referralPath);
+  const backText = referralPath === "/watchlist" ? "watchlist" : "results";
   return currentMovie ? (
     <>
       <title>QueueUp | Title Details</title>
@@ -116,7 +111,7 @@ export default function MovieDetail() {
         content={`Get information about ${result.Title} and save it to your local watchlist with QueueUp.`}
       />
       <Link
-        to={`../${location.state.backPath}`}
+        to={referralPath}
         className="text-body-sm flex items-center gap-1 mb-4"
       >
         <ArrowLeftIcon className="size-3" /> {`Back to ${backText}`}

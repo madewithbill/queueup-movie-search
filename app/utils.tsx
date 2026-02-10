@@ -1,4 +1,5 @@
 import type { SetStateAction, SyntheticEvent, Dispatch } from "react";
+import { useHistory } from "./store";
 
 //Capture local watchlist
 export function getWatchlist({ queue }: { queue: string[] }) {
@@ -25,7 +26,7 @@ type watchlistToggleProps = {
 export function watchlistToggle({ e, result, setQueue }: watchlistToggleProps) {
   e.stopPropagation();
   const currentWatchlist: string[] = Array.from(
-    JSON.parse(localStorage.getItem("watchlist") || '""')
+    JSON.parse(localStorage.getItem("watchlist") || '""'),
   );
   const parsedWatchlist = currentWatchlist.map((movie) => {
     return JSON.parse(movie);
@@ -36,7 +37,7 @@ export function watchlistToggle({ e, result, setQueue }: watchlistToggleProps) {
     setQueue(currentWatchlist);
   } else {
     const newArr = currentWatchlist.filter(
-      (movie) => JSON.parse(movie).imdbID !== result.imdbID
+      (movie) => JSON.parse(movie).imdbID !== result.imdbID,
     );
     localStorage.setItem("watchlist", JSON.stringify(newArr));
     setQueue(newArr);

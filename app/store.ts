@@ -2,10 +2,10 @@ import { create } from "zustand";
 
 interface UseHistory {
   referralPath: string;
-  setReferralPath: (pathname: string) => void;
+  setPath: (pathname: string) => void;
 }
 
-const useHistory = create<UseHistory>()((set) => ({
+export const useHistory = create<UseHistory>()((set) => ({
   referralPath: "",
-  setReferralPath: (pathname) => set({ referralPath: pathname }),
+  setPath: (pathname) => set({ referralPath: pathname }),
 }));

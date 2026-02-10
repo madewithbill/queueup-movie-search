@@ -1,5 +1,3 @@
-import { useContext } from "react";
-import { QueueContext } from "../root";
 import { Link } from "react-router";
 import {
   MagnifyingGlassIcon,
@@ -7,18 +5,9 @@ import {
 } from "@heroicons/react/24/outline";
 
 export default function Navbar() {
-  const context = useContext(QueueContext);
-  const setSearchParams = context.setSearchParams;
-
   return (
     <nav className="flex items-center gap-4 py-4 mb-8">
-      <Link
-        className="text-heading-md mr-auto"
-        to="/"
-        onClick={() => {
-          setSearchParams("");
-        }}
-      >
+      <Link className="text-heading-md mr-auto" to="/">
         QueueUp
       </Link>
       <Link to="/">
