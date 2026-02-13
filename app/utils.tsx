@@ -1,5 +1,5 @@
-import type { SetStateAction, SyntheticEvent, Dispatch } from "react";
-import { useHistory, useWatchlist } from "./store";
+import type { SyntheticEvent } from "react";
+import { useWatchlist } from "./store";
 
 const addMedia = useWatchlist((s) => s.addMedia);
 const removeMedia = useWatchlist((s) => s.removeMedia);
@@ -12,18 +12,6 @@ export function getWatchlist({ watchlist }: { watchlist: string[] }) {
   });
   return currentWatchlist;
 }
-
-type watchlistToggleProps = {
-  e: SyntheticEvent;
-  result: {
-    Poster?: string;
-    Title?: string;
-    Type?: string;
-    Year?: string;
-    imdbID?: string;
-  };
-  setQueue: Dispatch<SetStateAction<string[]>>;
-};
 
 type Result = {
   Poster: string;
@@ -51,25 +39,3 @@ export function handleToggleClick(
     removeMedia(result);
   }
 }
-
-//Watchlist add/remove function
-// export function watchlistToggle({ e, result, setQueue }: watchlistToggleProps) {
-//   e.stopPropagation();
-//   const currentWatchlist: string[] = Array.from(
-//     JSON.parse(localStorage.getItem("watchlist") || '""'),
-//   );
-//   const parsedWatchlist = currentWatchlist.map((movie) => {
-//     return JSON.parse(movie);
-//   });
-//   if (parsedWatchlist.every((item) => item.imdbID !== result.imdbID)) {
-//     currentWatchlist.push(JSON.stringify(result));
-//     localStorage.setItem("watchlist", JSON.stringify(currentWatchlist));
-//     setQueue(currentWatchlist);
-//   } else {
-//     const newArr = currentWatchlist.filter(
-//       (movie) => JSON.parse(movie).imdbID !== result.imdbID,
-//     );
-//     localStorage.setItem("watchlist", JSON.stringify(newArr));
-//     setQueue(newArr);
-//   }
-// }
