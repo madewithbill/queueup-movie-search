@@ -1,11 +1,5 @@
-import {
-  useEffect,
-  useState,
-  useContext,
-  type Dispatch,
-  type SyntheticEvent,
-} from "react";
-import { useLocation, Link } from "react-router";
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import Card from "../components/Card";
 import {
   PlusIcon,
@@ -13,12 +7,12 @@ import {
   ArrowPathIcon,
   CheckIcon,
 } from "@heroicons/react/24/outline";
-import { QueueContext } from "../root";
-
-import { watchlistToggle, getWatchlist } from "../utils";
+import { useHistory, useWatchlist } from "../store";
+import { getWatchlist, handleToggleClick } from "../utils";
 import errorImg from "../assets/image-error-fallback.png";
+import type { Route } from "../../.react-router/types/app/routes/+types/movies.$id";
 
-type FullMovieObj = {
+export type FullMovieObj = {
   Title: string;
   Year: string;
   Rated: string;
@@ -49,25 +43,13 @@ type FullMovieObj = {
   Response: string;
 };
 
-type NavLocation = {
-  pathname: string;
-  search: string;
-  hash: string;
-  state: {
-    resultId: string;
-    backPath: string;
-  };
-  key: string;
-};
-
-export default function MovieDetail() {
+export default function MovieDetail({ params }: Route.ComponentProps) {
   const [currentMovie, setCurrentMovie] = useState<FullMovieObj | null>(null);
-  const location: NavLocation = useLocation();
-  const movieDetailId: string = location.state.resultId;
+  const movieDetailId: string = params.id ?? "";
 
-  const context = useContext(QueueContext);
-  const queue: string[] = context.queue;
-  const setQueue: Dispatch<React.SetStateAction<string[]>> = context.setQueue;
+  const watchlist = useWatchlist((s) => s.watchlist);
+  const addMedia = useWatchlist((s) => s.addMedia);
+  const removeMedia = useWatchlist((s) => s.removeMedia);
 
   useEffect(() => {
     const omdbKey = import.meta.env.VITE_OMDB_KEY;
@@ -85,29 +67,33 @@ export default function MovieDetail() {
     }
   }, []);
 
-  //Set function parameters from current movie data
-  const result = {
-    Poster: currentMovie?.Poster,
-    Title: currentMovie?.Title,
-    Type: currentMovie?.Type,
-    Year: currentMovie?.Year,
-    imdbID: currentMovie?.imdbID,
-  };
-  const resultId: string = movieDetailId;
-
   //Check if current search result id is included in local watchlist
-  const onWatchlist: boolean = getWatchlist({ queue }).includes(resultId);
-
-  //Watchlist indicator toggle
-  function handleToggleClick(e: SyntheticEvent) {
-    watchlistToggle({ e, result, setQueue });
-  }
+  const resultId: string = movieDetailId;
+  const onWatchlist: boolean = getWatchlist({ watchlist }).includes(resultId);
 
   //Determine back link
-  const backText =
-    location.state.backPath === "/watchlist" ? "watchlist" : "results";
+  const referralPath = useHistory((s) => s.referralPath);
+  const backText = referralPath === "/watchlist" ? "watchlist" : "results";
 
-  return currentMovie ? (
+  if (!currentMovie) {
+    return (
+      <div className="opacity-20 flex items-center justify-center gap-4 w-full min-h-dvh">
+        <ArrowPathIcon className="size-6 animate-spin" />
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  //Define result object
+  const result = {
+    Poster: currentMovie.Poster,
+    Title: currentMovie.Title,
+    Type: currentMovie.Type,
+    Year: currentMovie.Year,
+    imdbID: currentMovie.imdbID,
+  };
+
+  return (
     <>
       <title>QueueUp | Title Details</title>
       <meta property="og:title" content={`Find ${result.Title} on QueueUp.`} />
@@ -116,7 +102,7 @@ export default function MovieDetail() {
         content={`Get information about ${result.Title} and save it to your local watchlist with QueueUp.`}
       />
       <Link
-        to={`../${location.state.backPath}`}
+        to={referralPath}
         className="text-body-sm flex items-center gap-1 mb-4"
       >
         <ArrowLeftIcon className="size-3" /> {`Back to ${backText}`}
@@ -147,7 +133,9 @@ export default function MovieDetail() {
             </div>
             {onWatchlist ? (
               <button
-                onClick={handleToggleClick}
+                onClick={(e) =>
+                  handleToggleClick(e, watchlist, result, addMedia, removeMedia)
+                }
                 className="text-eyebrow text-green-500 flex items-center gap-1 border-[1.5px] rounded-full pl-2 pr-2.5 py-1"
               >
                 <CheckIcon className="size-3" />
@@ -155,7 +143,9 @@ export default function MovieDetail() {
               </button>
             ) : (
               <button
-                onClick={handleToggleClick}
+                onClick={(e) =>
+                  handleToggleClick(e, watchlist, result, addMedia, removeMedia)
+                }
                 className="text-eyebrow flex items-center gap-1 border-[1.5px] rounded-full pl-2 pr-2.5 py-1"
               >
                 <PlusIcon className="size-3" />
@@ -222,10 +212,5 @@ export default function MovieDetail() {
         </section>
       </main>
     </>
-  ) : (
-    <div className="opacity-20 flex items-center justify-center gap-4 w-full min-h-dvh">
-      <ArrowPathIcon className="size-6 animate-spin" />
-      <p>Loading...</p>
-    </div>
   );
 }

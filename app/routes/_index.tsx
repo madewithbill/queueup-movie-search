@@ -1,19 +1,12 @@
-import {
-  useState,
-  useEffect,
-  useContext,
-  type SyntheticEvent,
-  type Dispatch,
-  type JSX,
-} from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useState, useEffect, type SyntheticEvent, type JSX } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/Card";
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
-import { QueueContext, type Context } from "../root";
-import { watchlistToggle, getWatchlist } from "../utils";
+import { getWatchlist, handleToggleClick } from "../utils";
 import NoResultsText from "../components/NoResultsText";
 import errorImg from "../assets/image-error-fallback.png";
+import { useHistory, useWatchlist } from "../store";
 
 export type CallResponse = {
   Search: {
@@ -29,28 +22,26 @@ export type CallResponse = {
 };
 
 export default function Home() {
-  const location = useLocation();
   const navigate = useNavigate();
   const [queryResponse, setQueryResponse] = useState<CallResponse>();
   const [pagination, setPagination] = useState<number>(2);
+  const setPath = useHistory((s) => s.setPath);
   //Derived state
   const movieArray: CallResponse["Search"] | undefined = queryResponse?.Search;
   const totalResults: number = Number(queryResponse?.totalResults);
   const errorMessage: string | undefined = queryResponse?.Error;
 
   //Context
-  const context: Context = useContext(QueueContext);
-  const queue: string[] = context.queue;
-  const setQueue: Dispatch<React.SetStateAction<string[]>> = context.setQueue;
-  const searchParams = context.searchParams;
-  const setSearchParams = context.setSearchParams;
+  const watchlist: string[] = useWatchlist((s) => s.watchlist);
+  const addMedia = useWatchlist((s) => s.addMedia);
+  const removeMedia = useWatchlist((s) => s.removeMedia);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   //Search submit
   function handleSubmit(formData: FormData) {
-    const formQuery: string = encodeURIComponent(
-      formData.get("query") as string,
-    );
-    setSearchParams(formQuery);
+    const urlQuery = new URLSearchParams(formData.get("query") as string);
+    setSearchParams(urlQuery);
+    setPath(`/?${urlQuery}`);
   }
 
   // Fetching Movies
@@ -94,21 +85,15 @@ export default function Home() {
     const resultId: string = result.imdbID;
 
     //Check if current search result id is included in local watchlist
-    const onWatchlist: boolean = getWatchlist({ queue }).includes(resultId);
+    const onWatchlist: boolean = getWatchlist({ watchlist }).includes(resultId);
 
     //Navigate to movie detail page
     function handleClick(e: SyntheticEvent) {
       navigate(`movies/${e.currentTarget.id}`, {
         state: {
           resultId,
-          backPath: location.search,
         },
       });
-    }
-
-    //Watchlist indicator toggle
-    function handleToggleClick(e: SyntheticEvent) {
-      watchlistToggle({ e, result, setQueue });
     }
 
     return (
@@ -137,12 +122,31 @@ export default function Home() {
               {onWatchlist ? (
                 <button
                   className="text-green-500 ml-auto z-50"
-                  onClick={handleToggleClick}
+                  onClick={(e) =>
+                    handleToggleClick(
+                      e,
+                      watchlist,
+                      result,
+                      addMedia,
+                      removeMedia,
+                    )
+                  }
                 >
                   <CheckCircleIcon className="size-8" />
                 </button>
               ) : (
-                <button className="ml-auto z-50" onClick={handleToggleClick}>
+                <button
+                  className="ml-auto z-50"
+                  onClick={(e) =>
+                    handleToggleClick(
+                      e,
+                      watchlist,
+                      result,
+                      addMedia,
+                      removeMedia,
+                    )
+                  }
+                >
                   <PlusCircleIcon className="size-8" />
                 </button>
               )}

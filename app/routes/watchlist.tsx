@@ -5,10 +5,12 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import InfiniteScroll from "react-infinite-scroll-component";
 import NoResultsText from "../components/NoResultsText";
 import errorImg from "../assets/image-error-fallback.png";
+import { useHistory } from "../store";
 
 export default function Watchlist() {
   const [watchlistSlice, setWatchlistSlice] = useState(10);
   const [filter, setFilter] = useState("choose-filter");
+  const setPath = useHistory((s) => s.setPath);
 
   const watchlistArr = () => {
     //parse baseline array to manipulate
@@ -68,7 +70,7 @@ export default function Watchlist() {
       <Link
         to={`../movies/${resultId}`}
         key={resultId}
-        state={{ resultId, backPath: location.pathname }}
+        onClick={() => setPath("/watchlist")}
         className="relative max-h-74"
       >
         <img

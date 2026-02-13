@@ -1,35 +1,8 @@
-import {
-  Outlet,
-  Scripts,
-  useSearchParams,
-  Links,
-  type URLSearchParamsInit,
-  ScrollRestoration,
-} from "react-router";
+import { Outlet, Scripts, Links, ScrollRestoration } from "react-router";
 import Navbar from "./components/Navbar";
-import {
-  createContext,
-  useState,
-  type Dispatch,
-  type ReactNode,
-  type SetStateAction,
-} from "react";
+import { type ReactNode } from "react";
 import "./global.css";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
-
-export type Context = {
-  queue: string[];
-  setQueue: Dispatch<React.SetStateAction<string[]>>;
-  searchParams: URLSearchParams | undefined;
-  setSearchParams: Dispatch<SetStateAction<URLSearchParamsInit>>;
-};
-
-const QueueContext = createContext<Context>({
-  queue: [],
-  setQueue: () => {},
-  searchParams: undefined,
-  setSearchParams: () => {},
-});
 
 export function HydrateFallback() {
   return (
@@ -61,20 +34,5 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [queue, setQueue] = useState(
-    window
-      ? (Array.from(
-          JSON.parse(localStorage.getItem("watchlist") || '""'),
-        ) as string[])
-      : [],
-  );
-
-  return (
-    <QueueContext value={{ queue, setQueue, searchParams, setSearchParams }}>
-      <Outlet />
-    </QueueContext>
-  );
+  return <Outlet />;
 }
-
-export { QueueContext };

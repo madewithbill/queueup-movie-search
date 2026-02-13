@@ -1,44 +1,39 @@
-import type { SetStateAction, SyntheticEvent, Dispatch } from "react";
+import type { SyntheticEvent } from "react";
+import type { UseWatchlist } from "./store";
+import type { FullMovieObj } from "./routes/movies.$id";
 
 //Capture local watchlist
-export function getWatchlist({ queue }: { queue: string[] }) {
-  const currentWatchlist: string[] = queue.map((movie) => {
-    const movieObj = JSON.parse(movie as string);
+export function getWatchlist({ watchlist }: { watchlist: string[] }) {
+  const currentWatchlist: string[] = watchlist.map((item) => {
+    const movieObj = JSON.parse(item as string);
     return movieObj.imdbID;
   });
   return currentWatchlist;
 }
 
-type watchlistToggleProps = {
-  e: SyntheticEvent;
-  result: {
-    Poster?: string;
-    Title?: string;
-    Type?: string;
-    Year?: string;
-    imdbID?: string;
-  };
-  setQueue: Dispatch<SetStateAction<string[]>>;
-};
+type Result = Pick<
+  FullMovieObj,
+  "Poster" | "Title" | "Type" | "Year" | "imdbID"
+>;
 
-//Watchlist add/remove function
-export function watchlistToggle({ e, result, setQueue }: watchlistToggleProps) {
+//Watchlist indicator toggle
+export function handleToggleClick(
+  e: SyntheticEvent,
+  watchlist: string[],
+  result: Result,
+  addMedia: UseWatchlist["addMedia"],
+  removeMedia: UseWatchlist["removeMedia"],
+) {
   e.stopPropagation();
-  const currentWatchlist: string[] = Array.from(
-    JSON.parse(localStorage.getItem("watchlist") || '""')
-  );
-  const parsedWatchlist = currentWatchlist.map((movie) => {
-    return JSON.parse(movie);
+  console.log(e);
+  const parsedWatchlist = watchlist.map((item: string) => {
+    return JSON.parse(item);
   });
   if (parsedWatchlist.every((item) => item.imdbID !== result.imdbID)) {
-    currentWatchlist.push(JSON.stringify(result));
-    localStorage.setItem("watchlist", JSON.stringify(currentWatchlist));
-    setQueue(currentWatchlist);
+    watchlist.push(JSON.stringify(result));
+    localStorage.setItem("watchlist", JSON.stringify(watchlist));
+    addMedia(result);
   } else {
-    const newArr = currentWatchlist.filter(
-      (movie) => JSON.parse(movie).imdbID !== result.imdbID
-    );
-    localStorage.setItem("watchlist", JSON.stringify(newArr));
-    setQueue(newArr);
+    removeMedia(result);
   }
 }
