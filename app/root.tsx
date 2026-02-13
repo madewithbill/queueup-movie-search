@@ -1,18 +1,8 @@
 import { Outlet, Scripts, Links, ScrollRestoration } from "react-router";
 import Navbar from "./components/Navbar";
-import { createContext, useState, type Dispatch, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import "./global.css";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
-
-export type Context = {
-  queue: string[];
-  setQueue: Dispatch<React.SetStateAction<string[]>>;
-};
-
-const QueueContext = createContext<Context>({
-  queue: [],
-  setQueue: () => {},
-});
 
 export function HydrateFallback() {
   return (
@@ -44,19 +34,5 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
-  const [queue, setQueue] = useState(
-    window
-      ? (Array.from(
-          JSON.parse(localStorage.getItem("watchlist") || '""'),
-        ) as string[])
-      : [],
-  );
-
-  return (
-    <QueueContext value={{ queue, setQueue }}>
-      <Outlet />
-    </QueueContext>
-  );
+  return <Outlet />;
 }
-
-export { QueueContext };

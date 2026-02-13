@@ -1,21 +1,12 @@
-import {
-  useState,
-  useEffect,
-  useContext,
-  type SyntheticEvent,
-  type Dispatch,
-  type JSX,
-} from "react";
+import { useState, useEffect, type SyntheticEvent, type JSX } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/Card";
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
-import { QueueContext, type Context } from "../root";
-import { watchlistToggle, getWatchlist } from "../utils";
+import { getWatchlist, handleToggleClick } from "../utils";
 import NoResultsText from "../components/NoResultsText";
 import errorImg from "../assets/image-error-fallback.png";
-import { useHistory } from "../store";
-// import type { Route } from "../../.react-router/types/app/routes/+types/_index";
+import { useHistory, useWatchlist } from "../store";
 
 export type CallResponse = {
   Search: {
@@ -41,9 +32,7 @@ export default function Home() {
   const errorMessage: string | undefined = queryResponse?.Error;
 
   //Context
-  const context: Context = useContext(QueueContext);
-  const queue: string[] = context.queue;
-  const setQueue: Dispatch<React.SetStateAction<string[]>> = context.setQueue;
+  const watchlist: string[] = useWatchlist((s) => s.watchlist);
   const [searchParams, setSearchParams] = useSearchParams();
 
   //Search submit
@@ -94,7 +83,7 @@ export default function Home() {
     const resultId: string = result.imdbID;
 
     //Check if current search result id is included in local watchlist
-    const onWatchlist: boolean = getWatchlist({ queue }).includes(resultId);
+    const onWatchlist: boolean = getWatchlist({ watchlist }).includes(resultId);
 
     //Navigate to movie detail page
     function handleClick(e: SyntheticEvent) {
@@ -103,11 +92,6 @@ export default function Home() {
           resultId,
         },
       });
-    }
-
-    //Watchlist indicator toggle
-    function handleToggleClick(e: SyntheticEvent) {
-      watchlistToggle({ e, result, setQueue });
     }
 
     return (
@@ -136,12 +120,15 @@ export default function Home() {
               {onWatchlist ? (
                 <button
                   className="text-green-500 ml-auto z-50"
-                  onClick={handleToggleClick}
+                  onClick={() => handleToggleClick}
                 >
                   <CheckCircleIcon className="size-8" />
                 </button>
               ) : (
-                <button className="ml-auto z-50" onClick={handleToggleClick}>
+                <button
+                  className="ml-auto z-50"
+                  onClick={() => handleToggleClick}
+                >
                   <PlusCircleIcon className="size-8" />
                 </button>
               )}
