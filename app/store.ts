@@ -13,7 +13,7 @@ interface Result {
   imdbID?: string;
 }
 
-interface UseWatchlist {
+export interface UseWatchlist {
   watchlist: string[];
   addMedia: (mediaItem: Result) => void;
   removeMedia: (mediaItem: Result) => void;

@@ -33,6 +33,8 @@ export default function Home() {
 
   //Context
   const watchlist: string[] = useWatchlist((s) => s.watchlist);
+  const addMedia = useWatchlist((s) => s.addMedia);
+  const removeMedia = useWatchlist((s) => s.removeMedia);
   const [searchParams, setSearchParams] = useSearchParams();
 
   //Search submit
@@ -120,14 +122,30 @@ export default function Home() {
               {onWatchlist ? (
                 <button
                   className="text-green-500 ml-auto z-50"
-                  onClick={() => handleToggleClick}
+                  onClick={(e) =>
+                    handleToggleClick(
+                      e,
+                      watchlist,
+                      result,
+                      addMedia,
+                      removeMedia,
+                    )
+                  }
                 >
                   <CheckCircleIcon className="size-8" />
                 </button>
               ) : (
                 <button
                   className="ml-auto z-50"
-                  onClick={() => handleToggleClick}
+                  onClick={(e) =>
+                    handleToggleClick(
+                      e,
+                      watchlist,
+                      result,
+                      addMedia,
+                      removeMedia,
+                    )
+                  }
                 >
                   <PlusCircleIcon className="size-8" />
                 </button>
