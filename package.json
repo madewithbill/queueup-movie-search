@@ -7,7 +7,8 @@
     "dev": "react-router dev",
     "build": "react-router build",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
