@@ -1,47 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import Card from "../components/Card";
 import {
   PlusIcon,
   ArrowLeftIcon,
   ArrowPathIcon,
   CheckIcon,
 } from "@heroicons/react/24/outline";
+
 import { useHistory, useWatchlist } from "../store";
 import { getWatchlist, handleToggleClick } from "../utils";
-import errorImg from "../assets/image-error-fallback.png";
-import type { Route } from "../../.react-router/types/app/routes/+types/movies.$id";
 
-export type FullMovieObj = {
-  Title: string;
-  Year: string;
-  Rated: string;
-  Released: string;
-  Runtime: string;
-  Genre: string;
-  Director: string;
-  Writer: string;
-  Actors: string;
-  Plot: string;
-  Language: string;
-  Country: string;
-  Awards: string;
-  Poster: string;
-  Ratings: {
-    Source: string;
-    Value: string;
-  }[];
-  Metascore: string;
-  imdbRating: string;
-  imdbVotes: string;
-  imdbID: string;
-  Type: string;
-  DVD: string;
-  BoxOffice: string;
-  Production: string;
-  Website: string;
-  Response: string;
-};
+import Card from "../components/Card";
+import errorImg from "../assets/image-error-fallback.png";
+
+import type { Route } from "./+types/movies.$id";
+import type { FullMovieObj } from "../shared.types";
 
 export default function MovieDetail({ params }: Route.ComponentProps) {
   const [currentMovie, setCurrentMovie] = useState<FullMovieObj | null>(null);

@@ -1,11 +1,14 @@
 import { useState, type ChangeEvent } from "react";
 import { Link } from "react-router";
-import { type CallResponse } from "./_index";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+
+import { useHistory } from "../store";
+
 import NoResultsText from "../components/NoResultsText";
 import errorImg from "../assets/image-error-fallback.png";
-import { useHistory } from "../store";
+
+import type { CallResponse } from "../shared.types";
 
 export default function Watchlist() {
   const [watchlistSlice, setWatchlistSlice] = useState(10);
