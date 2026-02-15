@@ -1,8 +1,9 @@
+import type { ReactNode } from "react";
 import { Outlet, Scripts, Links, ScrollRestoration } from "react-router";
-import Navbar from "./components/Navbar";
-import { type ReactNode } from "react";
-import "./global.css";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+
+import "./global.css";
+import Navbar from "./components/Navbar";
 
 export function HydrateFallback() {
   return (

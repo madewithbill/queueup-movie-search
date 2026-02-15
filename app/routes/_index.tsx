@@ -1,25 +1,16 @@
 import { useState, useEffect, type SyntheticEvent, type JSX } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Card from "../components/Card";
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+
+import { useHistory, useWatchlist } from "../store";
 import { getWatchlist, handleToggleClick } from "../utils";
+
+import Card from "../components/Card";
 import NoResultsText from "../components/NoResultsText";
 import errorImg from "../assets/image-error-fallback.png";
-import { useHistory, useWatchlist } from "../store";
 
-export type CallResponse = {
-  Search: {
-    Poster: string;
-    Title: string;
-    Type: string;
-    Year: string;
-    imdbID: string;
-  }[];
-  totalResults: string;
-  Response: boolean;
-  Error?: string;
-};
+import type { CallResponse } from "../shared.types";
 
 export default function Home() {
   const navigate = useNavigate();

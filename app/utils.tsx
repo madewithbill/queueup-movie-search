@@ -1,6 +1,7 @@
 import type { SyntheticEvent } from "react";
+
 import type { UseWatchlist } from "./store";
-import type { FullMovieObj } from "./routes/movies.$id";
+import type { FullMovieObj } from "./shared.types";
 
 //Capture local watchlist
 export function getWatchlist({ watchlist }: { watchlist: string[] }) {
