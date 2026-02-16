@@ -23,21 +23,21 @@ export default function MediaDetail({ params }: Route.ComponentProps) {
   const watchlist = useWatchlist((s) => s.watchlist);
   const addMedia = useWatchlist((s) => s.addMedia);
   const removeMedia = useWatchlist((s) => s.removeMedia);
-
   useEffect(() => {
     const omdbKey = import.meta.env.VITE_OMDB_KEY;
-    try {
-      async function getDetails() {
+
+    async function getDetails() {
+      try {
         const res = await fetch(
           `https://www.omdbapi.com/?apikey=${omdbKey}&i=${mediaDetailId}`,
         );
         const data = await res.json();
         setCurrentMedia(data);
+      } catch (error) {
+        console.log(error);
       }
-      getDetails();
-    } catch (error) {
-      console.log(error);
     }
+    getDetails();
   }, []);
 
   //Check if current search result id is included in local watchlist
