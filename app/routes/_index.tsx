@@ -14,15 +14,15 @@ import type { CallResponse } from "../shared.types";
 
 export default function Home() {
   const navigate = useNavigate();
-  const [queryResponse, setQueryResponse] = useState<CallResponse>();
+  const [callResponse, setCallResponse] = useState<CallResponse>();
   const [pagination, setPagination] = useState<number>(2);
   const setPath = useHistory((s) => s.setPath);
   //Derived state
-  const movieArray: CallResponse["Search"] | undefined = queryResponse?.Search;
-  const totalResults: number = Number(queryResponse?.totalResults);
-  const errorMessage: string | undefined = queryResponse?.Error;
+  const mediaArray: CallResponse["Search"] | undefined = callResponse?.Search;
+  const totalResults: number = Number(callResponse?.totalResults);
+  const errorMessage: string | undefined = callResponse?.Error;
 
-  //Context
+  //Context and query
   const watchlist: string[] = useWatchlist((s) => s.watchlist);
   const addMedia = useWatchlist((s) => s.addMedia);
   const removeMedia = useWatchlist((s) => s.removeMedia);
@@ -31,6 +31,7 @@ export default function Home() {
   //Search submit
   function handleSubmit(formData: FormData) {
     const urlQuery = new URLSearchParams(formData.get("query") as string);
+    //capture query for store
     setSearchParams(urlQuery);
     setPath(`/?${urlQuery}`);
   }
@@ -41,7 +42,7 @@ export default function Home() {
   useEffect(() => {
     try {
       if (!searchParams?.size) {
-        setQueryResponse(undefined);
+        setCallResponse(undefined);
         return;
       }
       async function getMovie() {
@@ -50,7 +51,7 @@ export default function Home() {
         );
         const data = await res.json();
 
-        setQueryResponse(data);
+        setCallResponse(data);
       }
       getMovie();
     } catch (error) {
@@ -64,7 +65,7 @@ export default function Home() {
         `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}&page=${pagination}`,
       );
       const data = await res.json();
-      movieArray?.push(...data.Search);
+      mediaArray?.push(...data.Search);
       setPagination((prevPage) => prevPage + 1);
     } catch (error) {
       console.log(error);
@@ -72,81 +73,87 @@ export default function Home() {
   }
 
   //Building results card list
-  const cardElements: JSX.Element[] | undefined = movieArray?.map((result) => {
-    const resultId: string = result.imdbID;
+  const cardElements: JSX.Element[] | undefined = mediaArray?.map(
+    (watchlistItem) => {
+      const watchlistItemId: string = watchlistItem.imdbID;
 
-    //Check if current search result id is included in local watchlist
-    const onWatchlist: boolean = getWatchlist({ watchlist }).includes(resultId);
+      //Check if current search result id is included in local watchlist
+      const onWatchlist: boolean = getWatchlist({ watchlist }).includes(
+        watchlistItemId,
+      );
 
-    //Navigate to movie detail page
-    function handleClick(e: SyntheticEvent) {
-      navigate(`movies/${e.currentTarget.id}`, {
-        state: {
-          resultId,
-        },
-      });
-    }
+      //Navigate to movie detail page
+      function handleClick(e: SyntheticEvent) {
+        navigate(`titles/${e.currentTarget.id}`, {
+          state: {
+            watchlistItemId,
+          },
+        });
+      }
 
-    return (
-      <>
-        <Card
-          id={resultId}
-          key={resultId}
-          className="flex items-center gap-4 cursor-pointer"
-          onClick={handleClick}
-        >
-          <img
-            className="max-w-12  min-h-18 object-contain"
-            src={result.Poster}
-            alt={`Poster for ${result.Title}`}
-            onError={(e) => {
-              e.currentTarget.src = errorImg;
-              e.currentTarget.onerror = null;
-            }}
-          />
-          <div className="flex flex-auto flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <div>
-                <h2 className="text-body-lg">{result.Title}</h2>
-                <p className="text-body-sm opacity-50">{result.Year}</p>
+      return (
+        <>
+          <Card
+            id={watchlistItemId}
+            key={watchlistItemId}
+            className="flex items-center gap-4 cursor-pointer"
+            onClick={handleClick}
+          >
+            <img
+              className="max-w-12  min-h-18 object-contain"
+              src={watchlistItem.Poster}
+              alt={`Poster for ${watchlistItem.Title}`}
+              onError={(e) => {
+                e.currentTarget.src = errorImg;
+                e.currentTarget.onerror = null;
+              }}
+            />
+            <div className="flex flex-auto flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <div>
+                  <h2 className="text-body-lg">{watchlistItem.Title}</h2>
+                  <p className="text-body-sm opacity-50">
+                    {watchlistItem.Year}
+                  </p>
+                </div>
+                {onWatchlist ? (
+                  <button
+                    className="text-green-500 ml-auto z-50"
+                    onClick={(e) =>
+                      handleToggleClick(
+                        e,
+                        watchlist,
+                        watchlistItem,
+                        addMedia,
+                        removeMedia,
+                      )
+                    }
+                  >
+                    <CheckCircleIcon className="size-8" />
+                  </button>
+                ) : (
+                  <button
+                    className="ml-auto z-50"
+                    onClick={(e) =>
+                      handleToggleClick(
+                        e,
+                        watchlist,
+                        watchlistItem,
+                        addMedia,
+                        removeMedia,
+                      )
+                    }
+                  >
+                    <PlusCircleIcon className="size-8" />
+                  </button>
+                )}
               </div>
-              {onWatchlist ? (
-                <button
-                  className="text-green-500 ml-auto z-50"
-                  onClick={(e) =>
-                    handleToggleClick(
-                      e,
-                      watchlist,
-                      result,
-                      addMedia,
-                      removeMedia,
-                    )
-                  }
-                >
-                  <CheckCircleIcon className="size-8" />
-                </button>
-              ) : (
-                <button
-                  className="ml-auto z-50"
-                  onClick={(e) =>
-                    handleToggleClick(
-                      e,
-                      watchlist,
-                      result,
-                      addMedia,
-                      removeMedia,
-                    )
-                  }
-                >
-                  <PlusCircleIcon className="size-8" />
-                </button>
-              )}
             </div>
-          </div>
-        </Card>
-      </>
-    );
-  });
+          </Card>
+        </>
+      );
+    },
+  );
 
   const resultsInfo = () => {
     if (!totalResults) {
@@ -190,12 +197,12 @@ export default function Home() {
         </p>
       </header>
       <main>
-        {movieArray && (
+        {mediaArray && (
           <InfiniteScroll
             className="flex flex-col gap-4"
-            dataLength={movieArray.length}
+            dataLength={mediaArray.length}
             next={fetchMoreMovies}
-            hasMore={totalResults > movieArray.length}
+            hasMore={totalResults > mediaArray.length}
             loader={
               <p className="opacity-50 text-body-sm text-center">Loading...</p>
             }
@@ -208,7 +215,7 @@ export default function Home() {
             {cardElements}
           </InfiniteScroll>
         )}
-        {!movieArray && !errorMessage && (
+        {!mediaArray && !errorMessage && (
           <NoResultsText>
             Your next watch is just around the corner.
           </NoResultsText>

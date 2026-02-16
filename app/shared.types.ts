@@ -11,7 +11,9 @@ export type CallResponse = {
   Error?: string;
 };
 
-export type FullMovieObj = {
+export type WatchlistItem = CallResponse["Search"][0];
+
+export type FullMediaObj = {
   Title: string;
   Year: string;
   Rated: string;

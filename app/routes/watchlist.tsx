@@ -71,7 +71,7 @@ export default function Watchlist() {
 
     return (
       <Link
-        to={`../movies/${resultId}`}
+        to={`../titles/${resultId}`}
         key={resultId}
         onClick={() => setPath("/watchlist")}
         className="relative max-h-74"

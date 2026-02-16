@@ -13,12 +13,12 @@ import { getWatchlist, handleToggleClick } from "../utils";
 import Card from "../components/Card";
 import errorImg from "../assets/image-error-fallback.png";
 
-import type { Route } from "./+types/movies.$id";
-import type { FullMovieObj } from "../shared.types";
+import type { Route } from "./+types/titles.$id";
+import type { FullMediaObj, WatchlistItem } from "../shared.types";
 
-export default function MovieDetail({ params }: Route.ComponentProps) {
-  const [currentMovie, setCurrentMovie] = useState<FullMovieObj | null>(null);
-  const movieDetailId: string = params.id ?? "";
+export default function MediaDetail({ params }: Route.ComponentProps) {
+  const [currentMedia, setCurrentMedia] = useState<FullMediaObj | null>(null);
+  const mediaDetailId: string = params.id ?? "";
 
   const watchlist = useWatchlist((s) => s.watchlist);
   const addMedia = useWatchlist((s) => s.addMedia);
@@ -29,10 +29,10 @@ export default function MovieDetail({ params }: Route.ComponentProps) {
     try {
       async function getDetails() {
         const res = await fetch(
-          `https://www.omdbapi.com/?apikey=${omdbKey}&i=${movieDetailId}`,
+          `https://www.omdbapi.com/?apikey=${omdbKey}&i=${mediaDetailId}`,
         );
         const data = await res.json();
-        setCurrentMovie(data);
+        setCurrentMedia(data);
       }
       getDetails();
     } catch (error) {
@@ -41,14 +41,14 @@ export default function MovieDetail({ params }: Route.ComponentProps) {
   }, []);
 
   //Check if current search result id is included in local watchlist
-  const resultId: string = movieDetailId;
+  const resultId: string = mediaDetailId;
   const onWatchlist: boolean = getWatchlist({ watchlist }).includes(resultId);
 
   //Determine back link
   const referralPath = useHistory((s) => s.referralPath);
   const backText = referralPath === "/watchlist" ? "watchlist" : "results";
 
-  if (!currentMovie) {
+  if (!currentMedia) {
     return (
       <div className="opacity-20 flex items-center justify-center gap-4 w-full min-h-dvh">
         <ArrowPathIcon className="size-6 animate-spin" />
@@ -57,22 +57,24 @@ export default function MovieDetail({ params }: Route.ComponentProps) {
     );
   }
 
-  //Define result object
-  const result = {
-    Poster: currentMovie.Poster,
-    Title: currentMovie.Title,
-    Type: currentMovie.Type,
-    Year: currentMovie.Year,
-    imdbID: currentMovie.imdbID,
+  const watchlistItem: WatchlistItem = {
+    Poster: currentMedia.Poster,
+    Title: currentMedia.Title,
+    Type: currentMedia.Type,
+    Year: currentMedia.Year,
+    imdbID: currentMedia.imdbID,
   };
 
   return (
     <>
       <title>QueueUp | Title Details</title>
-      <meta property="og:title" content={`Find ${result.Title} on QueueUp.`} />
+      <meta
+        property="og:title"
+        content={`Find ${currentMedia.Title} on QueueUp.`}
+      />
       <meta
         name="description"
-        content={`Get information about ${result.Title} and save it to your local watchlist with QueueUp.`}
+        content={`Get information about ${currentMedia.Title} and save it to your local watchlist with QueueUp.`}
       />
       <Link
         to={referralPath}
@@ -84,8 +86,8 @@ export default function MovieDetail({ params }: Route.ComponentProps) {
         <section className="flex gap-4">
           <img
             className="max-w-32"
-            src={currentMovie.Poster}
-            alt={`Poster for ${currentMovie.Title}`}
+            src={currentMedia.Poster}
+            alt={`Poster for ${currentMedia.Title}`}
             onError={(e) => {
               e.currentTarget.src = errorImg;
               e.currentTarget.onerror = null;
@@ -93,21 +95,27 @@ export default function MovieDetail({ params }: Route.ComponentProps) {
           />
           <div className="flex flex-col items-start gap-4">
             <div>
-              <h1 className="text-heading-md">{currentMovie.Title}</h1>
+              <h1 className="text-heading-md">{currentMedia.Title}</h1>
               <div className="text-[0.625rem] text-neutral-700 dark:text-neutral-200 flex gap-2">
-                <p>{currentMovie.Year}</p>
-                <p>{currentMovie.Runtime}</p>
-                <p>{currentMovie.Rated}</p>
+                <p>{currentMedia.Year}</p>
+                <p>{currentMedia.Runtime}</p>
+                <p>{currentMedia.Rated}</p>
               </div>
             </div>
             <div className="text-eyebrow">
-              <p className="mb-2">{currentMovie.Genre}</p>
-              <p>{`Starring: ${currentMovie.Actors}`}</p>
+              <p className="mb-2">{currentMedia.Genre}</p>
+              <p>{`Starring: ${currentMedia.Actors}`}</p>
             </div>
             {onWatchlist ? (
               <button
                 onClick={(e) =>
-                  handleToggleClick(e, watchlist, result, addMedia, removeMedia)
+                  handleToggleClick(
+                    e,
+                    watchlist,
+                    watchlistItem,
+                    addMedia,
+                    removeMedia,
+                  )
                 }
                 className="text-eyebrow text-green-500 flex items-center gap-1 border-[1.5px] rounded-full pl-2 pr-2.5 py-1"
               >
@@ -117,7 +125,13 @@ export default function MovieDetail({ params }: Route.ComponentProps) {
             ) : (
               <button
                 onClick={(e) =>
-                  handleToggleClick(e, watchlist, result, addMedia, removeMedia)
+                  handleToggleClick(
+                    e,
+                    watchlist,
+                    watchlistItem,
+                    addMedia,
+                    removeMedia,
+                  )
                 }
                 className="text-eyebrow flex items-center gap-1 border-[1.5px] rounded-full pl-2 pr-2.5 py-1"
               >
@@ -130,7 +144,7 @@ export default function MovieDetail({ params }: Route.ComponentProps) {
         <section>
           <Card className="text-body-sm">
             <h2 className="mb-2">Synopsis</h2>
-            <p className="opacity-65">{currentMovie.Plot}</p>
+            <p className="opacity-65">{currentMedia.Plot}</p>
           </Card>
         </section>
         <section className="flex gap-2 text-center">
@@ -138,7 +152,7 @@ export default function MovieDetail({ params }: Route.ComponentProps) {
             <h2 className="text-[0.5rem]/[1.875]">IMDB</h2>
             <p className="text-[0.5625rem]/[1.875]">
               <span className="block text-heading-xl">
-                {currentMovie.Ratings[0]?.Value?.slice(-6, -3) || `n/a`}
+                {currentMedia.Ratings[0]?.Value.slice(-6, -3) || `n/a`}
               </span>
               Audience Rating
             </p>
@@ -147,7 +161,7 @@ export default function MovieDetail({ params }: Route.ComponentProps) {
             <h2 className="text-[0.5rem]/[1.875]">Rotten Tomatoes</h2>
             <p className="text-[0.5625rem]/[1.875]">
               <span className="block text-heading-xl">
-                {currentMovie.Ratings[1]?.Value || `n/a`}
+                {currentMedia.Ratings[1]?.Value || `n/a`}
               </span>
               Tomatometer
             </p>
@@ -156,7 +170,7 @@ export default function MovieDetail({ params }: Route.ComponentProps) {
             <h2 className="text-[0.5rem]/[1.875]">Metacritic</h2>
             <p className="text-[0.5625rem]/[1.875]">
               <span className="block text-heading-xl">
-                {currentMovie.Ratings[2]?.Value.slice(-7, -4) || `n/a`}
+                {currentMedia.Ratings[2]?.Value.slice(-7, -4) || `n/a`}
               </span>
               Metascore
             </p>
@@ -168,17 +182,17 @@ export default function MovieDetail({ params }: Route.ComponentProps) {
             <ul className="opacity-65 list-disc list-outside ms-4 leading-loose">
               <li>
                 <span className="font-medium">Written By: </span>
-                <span className="">{currentMovie.Writer}</span>
+                <span className="">{currentMedia.Writer}</span>
               </li>
-              {currentMovie.BoxOffice && (
+              {currentMedia.BoxOffice && (
                 <li>
                   <span className="font-medium">Domestic Box Office: </span>
-                  <span className="">{currentMovie.BoxOffice}</span>
+                  <span className="">{currentMedia.BoxOffice}</span>
                 </li>
               )}
               <li>
                 <span className="font-medium">Awards: </span>
-                <span className="">{currentMovie.Awards}</span>
+                <span className="">{currentMedia.Awards}</span>
               </li>
             </ul>
           </Card>
