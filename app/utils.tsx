@@ -1,7 +1,7 @@
 import type { SyntheticEvent } from "react";
 
 import type { UseWatchlist } from "./store";
-import type { FullMovieObj } from "./shared.types";
+import type { WatchlistItem } from "./shared.types";
 
 //Capture local watchlist
 export function getWatchlist({ watchlist }: { watchlist: string[] }) {
@@ -12,29 +12,22 @@ export function getWatchlist({ watchlist }: { watchlist: string[] }) {
   return currentWatchlist;
 }
 
-type Result = Pick<
-  FullMovieObj,
-  "Poster" | "Title" | "Type" | "Year" | "imdbID"
->;
-
-//Watchlist indicator toggle
+//Watchlist toggle
 export function handleToggleClick(
   e: SyntheticEvent,
   watchlist: string[],
-  result: Result,
+  watchlistItem: WatchlistItem,
   addMedia: UseWatchlist["addMedia"],
   removeMedia: UseWatchlist["removeMedia"],
 ) {
   e.stopPropagation();
-  console.log(e);
   const parsedWatchlist = watchlist.map((item: string) => {
     return JSON.parse(item);
   });
-  if (parsedWatchlist.every((item) => item.imdbID !== result.imdbID)) {
-    watchlist.push(JSON.stringify(result));
-    localStorage.setItem("watchlist", JSON.stringify(watchlist));
-    addMedia(result);
+  console.log(parsedWatchlist);
+  if (parsedWatchlist.every((item) => item.imdbID !== watchlistItem.imdbID)) {
+    addMedia(watchlistItem);
   } else {
-    removeMedia(result);
+    removeMedia(watchlistItem);
   }
 }
