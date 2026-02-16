@@ -9,6 +9,7 @@ import {
 
 import { useHistory, useWatchlist } from "../store";
 import { getWatchlist, handleToggleClick } from "../utils";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 import Card from "../components/Card";
 import errorImg from "../assets/image-error-fallback.png";
@@ -17,12 +18,15 @@ import type { Route } from "./+types/titles.$id";
 import type { FullMediaObj, WatchlistItem } from "../shared.types";
 
 export default function MediaDetail({ params }: Route.ComponentProps) {
-  const [currentMedia, setCurrentMedia] = useState<FullMediaObj | null>(null);
-  const mediaDetailId: string = params.id ?? "";
-
+  useLocalStorage();
+  //Context
   const watchlist = useWatchlist((s) => s.watchlist);
   const addMedia = useWatchlist((s) => s.addMedia);
   const removeMedia = useWatchlist((s) => s.removeMedia);
+
+  const [currentMedia, setCurrentMedia] = useState<FullMediaObj | null>(null);
+  const mediaDetailId: string = params.id ?? "";
+
   useEffect(() => {
     const omdbKey = import.meta.env.VITE_OMDB_KEY;
 

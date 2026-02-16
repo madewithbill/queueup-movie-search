@@ -24,9 +24,8 @@ export function handleToggleClick(
   const parsedWatchlist = watchlist.map((item: string) => {
     return JSON.parse(item);
   });
+  console.log(parsedWatchlist);
   if (parsedWatchlist.every((item) => item.imdbID !== watchlistItem.imdbID)) {
-    watchlist.push(JSON.stringify(watchlistItem));
-    localStorage.setItem("watchlist", JSON.stringify(watchlist));
     addMedia(watchlistItem);
   } else {
     removeMedia(watchlistItem);

@@ -5,6 +5,7 @@ import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 
 import { useHistory, useWatchlist } from "../store";
 import { getWatchlist, handleToggleClick } from "../utils";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 import Card from "../components/Card";
 import NoResultsText from "../components/NoResultsText";
@@ -13,7 +14,15 @@ import errorImg from "../assets/image-error-fallback.png";
 import type { CallResponse } from "../shared.types";
 
 export default function Home() {
+  useLocalStorage();
+  //Context and query
+  const watchlist: string[] = useWatchlist((s) => s.watchlist);
+  const addMedia = useWatchlist((s) => s.addMedia);
+  const removeMedia = useWatchlist((s) => s.removeMedia);
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const navigate = useNavigate();
+  //State
   const [callResponse, setCallResponse] = useState<CallResponse>();
   const [pagination, setPagination] = useState<number>(2);
   const setPath = useHistory((s) => s.setPath);
@@ -21,12 +30,6 @@ export default function Home() {
   const mediaArray: CallResponse["Search"] | undefined = callResponse?.Search;
   const totalResults: number = Number(callResponse?.totalResults);
   const errorMessage: string | undefined = callResponse?.Error;
-
-  //Context and query
-  const watchlist: string[] = useWatchlist((s) => s.watchlist);
-  const addMedia = useWatchlist((s) => s.addMedia);
-  const removeMedia = useWatchlist((s) => s.removeMedia);
-  const [searchParams, setSearchParams] = useSearchParams();
 
   //Search submit
   function handleSubmit(formData: FormData) {
@@ -45,7 +48,7 @@ export default function Home() {
         setCallResponse(undefined);
         return;
       }
-      async function getMovie() {
+      async function getMedia() {
         const res = await fetch(
           `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}`,
         );
@@ -53,13 +56,13 @@ export default function Home() {
 
         setCallResponse(data);
       }
-      getMovie();
+      getMedia();
     } catch (error) {
       console.log(error);
     }
   }, [searchParams]);
 
-  async function fetchMoreMovies() {
+  async function fetchMoreMedia() {
     try {
       const res = await fetch(
         `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}&page=${pagination}`,
@@ -92,65 +95,61 @@ export default function Home() {
       }
 
       return (
-        <>
-          <Card
-            id={watchlistItemId}
-            key={watchlistItemId}
-            className="flex items-center gap-4 cursor-pointer"
-            onClick={handleClick}
-          >
-            <img
-              className="max-w-12  min-h-18 object-contain"
-              src={watchlistItem.Poster}
-              alt={`Poster for ${watchlistItem.Title}`}
-              onError={(e) => {
-                e.currentTarget.src = errorImg;
-                e.currentTarget.onerror = null;
-              }}
-            />
-            <div className="flex flex-auto flex-col gap-4">
-              <div className="flex items-center gap-2">
-                <div>
-                  <h2 className="text-body-lg">{watchlistItem.Title}</h2>
-                  <p className="text-body-sm opacity-50">
-                    {watchlistItem.Year}
-                  </p>
-                </div>
-                {onWatchlist ? (
-                  <button
-                    className="text-green-500 ml-auto z-50"
-                    onClick={(e) =>
-                      handleToggleClick(
-                        e,
-                        watchlist,
-                        watchlistItem,
-                        addMedia,
-                        removeMedia,
-                      )
-                    }
-                  >
-                    <CheckCircleIcon className="size-8" />
-                  </button>
-                ) : (
-                  <button
-                    className="ml-auto z-50"
-                    onClick={(e) =>
-                      handleToggleClick(
-                        e,
-                        watchlist,
-                        watchlistItem,
-                        addMedia,
-                        removeMedia,
-                      )
-                    }
-                  >
-                    <PlusCircleIcon className="size-8" />
-                  </button>
-                )}
+        <Card
+          id={watchlistItemId}
+          key={watchlistItemId}
+          className="flex items-center gap-4 cursor-pointer"
+          onClick={handleClick}
+        >
+          <img
+            className="max-w-12  min-h-18 object-contain"
+            src={watchlistItem.Poster}
+            alt={`Poster for ${watchlistItem.Title}`}
+            onError={(e) => {
+              e.currentTarget.src = errorImg;
+              e.currentTarget.onerror = null;
+            }}
+          />
+          <div className="flex flex-auto flex-col gap-4">
+            <div className="flex items-center gap-2">
+              <div>
+                <h2 className="text-body-lg">{watchlistItem.Title}</h2>
+                <p className="text-body-sm opacity-50">{watchlistItem.Year}</p>
               </div>
+              {onWatchlist ? (
+                <button
+                  className="text-green-500 ml-auto z-50"
+                  onClick={(e) =>
+                    handleToggleClick(
+                      e,
+                      watchlist,
+                      watchlistItem,
+                      addMedia,
+                      removeMedia,
+                    )
+                  }
+                >
+                  <CheckCircleIcon className="size-8" />
+                </button>
+              ) : (
+                <button
+                  className="ml-auto z-50"
+                  onClick={(e) =>
+                    handleToggleClick(
+                      e,
+                      watchlist,
+                      watchlistItem,
+                      addMedia,
+                      removeMedia,
+                    )
+                  }
+                >
+                  <PlusCircleIcon className="size-8" />
+                </button>
+              )}
             </div>
-          </Card>
-        </>
+          </div>
+        </Card>
       );
     },
   );
@@ -201,7 +200,7 @@ export default function Home() {
           <InfiniteScroll
             className="flex flex-col gap-4"
             dataLength={mediaArray.length}
-            next={fetchMoreMovies}
+            next={fetchMoreMedia}
             hasMore={totalResults > mediaArray.length}
             loader={
               <p className="opacity-50 text-body-sm text-center">Loading...</p>

@@ -3,7 +3,8 @@ import { Link } from "react-router";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
-import { useHistory } from "../store";
+import { useHistory, useWatchlist } from "../store";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 import NoResultsText from "../components/NoResultsText";
 import errorImg from "../assets/image-error-fallback.png";
@@ -11,15 +12,15 @@ import errorImg from "../assets/image-error-fallback.png";
 import type { CallResponse } from "../shared.types";
 
 export default function Watchlist() {
+  useLocalStorage();
+  //Context
+  const setPath = useHistory((s) => s.setPath);
+  const watchlist = useWatchlist((s) => s.watchlist);
+
   const [watchlistSlice, setWatchlistSlice] = useState(10);
   const [filter, setFilter] = useState("choose-filter");
-  const setPath = useHistory((s) => s.setPath);
 
-  const watchlistArr = () => {
-    //parse baseline array to manipulate
-    const defaultArr: string[] = Array.from(
-      JSON.parse(localStorage.getItem("watchlist") || '""'),
-    );
+  const sortedArr = () => {
     //compareFn for sort methods
     const compare = (a: string, b: string) => {
       const titleA = JSON.parse(a).Title.toLowerCase();
@@ -36,33 +37,31 @@ export default function Watchlist() {
 
     //return array version based on select input
     if (filter === "newest-first") {
-      return defaultArr.reverse();
+      return watchlist.reverse();
     }
     if (filter === "oldest-first") {
-      return defaultArr;
+      return watchlist;
     }
     if (filter === "a-z") {
-      return defaultArr.sort(compare);
+      return watchlist.sort(compare);
     }
     if (filter === "z-a") {
-      return defaultArr.sort(compare).reverse();
+      return watchlist.sort(compare).reverse();
     }
-    return defaultArr;
+    return watchlist;
   };
 
   //initiate current rendered list based on slice state. begins with 10 results before Infinite Scroll loads more
-  const renderedArr = [...watchlistArr().slice(0, watchlistSlice)];
+  const renderedArr = [...sortedArr().slice(0, watchlistSlice)];
 
   //Infinite scroller function and hasMore check
   function fetchMoreWatchlist() {
-    renderedArr.push(
-      ...watchlistArr().slice(watchlistSlice, watchlistSlice + 10),
-    );
+    renderedArr.push(...sortedArr().slice(watchlistSlice, watchlistSlice + 10));
     setWatchlistSlice((prevSlice) => prevSlice + 10);
   }
 
   // this also conditionally renders end of results text
-  const listHasMore = watchlistArr().length > renderedArr.length;
+  const listHasMore = sortedArr().length > renderedArr.length;
 
   //create poster tiles
   const watchlistElements = renderedArr.map((movie) => {
@@ -98,14 +97,14 @@ export default function Watchlist() {
     filter !== "choose-filter" ? "text-neutral-950! dark:text-neutral-50!" : "";
 
   const resultsInfo = () => {
-    if (!watchlistArr().length) {
+    if (!sortedArr().length) {
       return "";
     }
-    if (watchlistArr().length === 1) {
+    if (sortedArr().length === 1) {
       return "1 result found";
     }
-    if (watchlistArr().length > 1) {
-      return `${watchlistArr().length} results found`;
+    if (sortedArr().length > 1) {
+      return `${sortedArr().length} results found`;
     }
   };
 

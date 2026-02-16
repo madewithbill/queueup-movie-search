@@ -1,22 +1,15 @@
 import { create } from "zustand";
+import type { WatchlistItem } from "./shared.types";
 
 interface UseHistory {
   referralPath: string;
   setPath: (pathname: string) => void;
 }
 
-interface Result {
-  Poster?: string;
-  Title?: string;
-  Type?: string;
-  Year?: string;
-  imdbID?: string;
-}
-
 export interface UseWatchlist {
   watchlist: string[];
-  addMedia: (mediaItem: Result) => void;
-  removeMedia: (mediaItem: Result) => void;
+  addMedia: (mediaItem: WatchlistItem) => void;
+  removeMedia: (mediaItem: WatchlistItem) => void;
 }
 
 export const useHistory = create<UseHistory>()((set) => ({
@@ -28,11 +21,11 @@ export const useWatchlist = create<UseWatchlist>()((set) => ({
   watchlist: Array.from(
     JSON.parse(localStorage.getItem("watchlist") || '""'),
   ) as string[],
-  addMedia: (mediaItem: Result) =>
+  addMedia: (mediaItem: WatchlistItem) =>
     set((state) => ({
       watchlist: [...state.watchlist, JSON.stringify(mediaItem)],
     })),
-  removeMedia: (mediaItem: Result) =>
+  removeMedia: (mediaItem: WatchlistItem) =>
     set((state) => {
       const currentArr = state.watchlist;
       const newArr = currentArr.filter(
