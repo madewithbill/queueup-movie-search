@@ -21,6 +21,15 @@ export default function Home() {
   const removeMedia = useWatchlist((s) => s.removeMedia);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // useEffect(() => {
+  //   async function netlifyFn() {
+  //     const res = await fetch(`/.netlify/functions/omdbfetch?${searchParams}`);
+  //     const data = await res.json();
+  //     console.log(data);
+  //   }
+  //   netlifyFn();
+  // }, []);
+
   const navigate = useNavigate();
   //State
   const [callResponse, setCallResponse] = useState<CallResponse>();
@@ -49,8 +58,12 @@ export default function Home() {
         return;
       }
       async function getMedia() {
+        // const res = await fetch(
+        //   `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}`,
+        // );
+        // const data = await res.json();
         const res = await fetch(
-          `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}`,
+          `/.netlify/functions/omdbfetch?${searchParams}`,
         );
         const data = await res.json();
 
