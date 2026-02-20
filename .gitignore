@@ -25,3 +25,5 @@ dist-ssr
 
 #React Router generated types
 .react-router/
+# Local Netlify folder
+.netlify

@@ -12,11 +12,13 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@netlify/functions": "^5.1.2",
     "@react-router/fs-routes": "^7.13.0",
     "@react-router/node": "^7.13.0",
     "@react-router/serve": "^7.13.0",
     "@tailwindcss/vite": "^4.1.18",
     "isbot": "^5",
+    "netlify-cli": "^23.15.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-infinite-scroll-component": "^6.1.1",

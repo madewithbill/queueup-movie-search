@@ -28,12 +28,10 @@ export default function MediaDetail({ params }: Route.ComponentProps) {
   const mediaDetailId: string = params.id ?? "";
 
   useEffect(() => {
-    const omdbKey = import.meta.env.VITE_OMDB_KEY;
-
     async function getDetails() {
       try {
         const res = await fetch(
-          `https://www.omdbapi.com/?apikey=${omdbKey}&i=${mediaDetailId}`,
+          `/.netlify/functions/omdbFetch?i=${mediaDetailId}`,
         );
         const data = await res.json();
         setCurrentMedia(data);
