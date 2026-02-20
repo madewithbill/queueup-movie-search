@@ -52,6 +52,7 @@ export default function Home() {
         const res = await fetch(fetchUrl);
         const data = await res.json();
         setCallResponse(data);
+        setPagination((prevPage) => prevPage + 1);
       }
       getMedia();
     } catch (error) {
@@ -63,7 +64,6 @@ export default function Home() {
     try {
       const res = await fetch(fetchUrl);
       const data = await res.json();
-      console.log(data);
       mediaArray?.push(...data.Search);
       setPagination((prevPage) => prevPage + 1);
     } catch (error) {
