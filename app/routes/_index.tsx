@@ -20,21 +20,13 @@ export default function Home() {
   const addMedia = useWatchlist((s) => s.addMedia);
   const removeMedia = useWatchlist((s) => s.removeMedia);
   const [searchParams, setSearchParams] = useSearchParams();
-
-  // useEffect(() => {
-  //   async function netlifyFn() {
-  //     const res = await fetch(`/.netlify/functions/omdbfetch?${searchParams}`);
-  //     const data = await res.json();
-  //     console.log(data);
-  //   }
-  //   netlifyFn();
-  // }, []);
-
   const navigate = useNavigate();
+
   //State
   const [callResponse, setCallResponse] = useState<CallResponse>();
-  const [pagination, setPagination] = useState<number>(2);
+  const [pagination, setPagination] = useState<number>(1);
   const setPath = useHistory((s) => s.setPath);
+
   //Derived state
   const mediaArray: CallResponse["Search"] | undefined = callResponse?.Search;
   const totalResults: number = Number(callResponse?.totalResults);
@@ -49,8 +41,7 @@ export default function Home() {
   }
 
   // Fetching Movies
-  const omdbKey = import.meta.env.VITE_OMDB_KEY;
-
+  const fetchUrl = `/.netlify/functions/omdbFetch?s=${searchParams}&page=${pagination}`;
   useEffect(() => {
     try {
       if (!searchParams?.size) {
@@ -58,15 +49,8 @@ export default function Home() {
         return;
       }
       async function getMedia() {
-        // const res = await fetch(
-        //   `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}`,
-        // );
-        // const data = await res.json();
-        const res = await fetch(
-          `/.netlify/functions/omdbfetch?${searchParams}`,
-        );
+        const res = await fetch(fetchUrl);
         const data = await res.json();
-
         setCallResponse(data);
       }
       getMedia();
@@ -77,10 +61,9 @@ export default function Home() {
 
   async function fetchMoreMedia() {
     try {
-      const res = await fetch(
-        `https://www.omdbapi.com/?apikey=${omdbKey}&s=${searchParams}&page=${pagination}`,
-      );
+      const res = await fetch(fetchUrl);
       const data = await res.json();
+      console.log(data);
       mediaArray?.push(...data.Search);
       setPagination((prevPage) => prevPage + 1);
     } catch (error) {
